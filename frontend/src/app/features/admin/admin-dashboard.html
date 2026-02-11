@@ -1,0 +1,90 @@
+<app-navbar></app-navbar>
+
+<div class="admin-dashboard-container">
+    <div class="admin-content">
+        <div class="admin-header">
+            <div>
+                <h1>Admin Dashboard</h1>
+                <p>Manage accounts, transactions, and system settings</p>
+            </div>
+            <mat-icon class="admin-icon">admin_panel_settings</mat-icon>
+        </div>
+
+        @if (loading) {
+        <div class="loading-container">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading dashboard...</p>
+        </div>
+        } @else {
+        <!-- Global Limit Card -->
+        @if (globalLimit !== null) {
+        <mat-card class="limit-card">
+            <div class="limit-content">
+                <mat-icon>attach_money</mat-icon>
+                <div>
+                    <p class="limit-label">Global Transfer Limit</p>
+                    <h2 class="limit-value">{{ formatCurrency(globalLimit) }}</h2>
+                </div>
+            </div>
+            <button mat-raised-button color="primary" (click)="navigateToLimits()">
+                Manage Limits
+            </button>
+        </mat-card>
+        }
+
+        <!-- Admin Actions -->
+        <div class="admin-actions">
+            <h3>Admin Actions</h3>
+            <div class="actions-grid">
+                <mat-card class="action-card" (click)="navigateToAccounts()">
+                    <div class="action-icon accounts-icon">
+                        <mat-icon>account_balance_wallet</mat-icon>
+                    </div>
+                    <h4>Account Management</h4>
+                    <p>Create, update, and manage user accounts</p>
+                    <button mat-button color="primary">
+                        Manage Accounts
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </mat-card>
+
+                <mat-card class="action-card" (click)="navigateToTransactions()">
+                    <div class="action-icon transactions-icon">
+                        <mat-icon>receipt_long</mat-icon>
+                    </div>
+                    <h4>Transaction Management</h4>
+                    <p>Search, filter, and reverse transactions</p>
+                    <button mat-button color="primary">
+                        View Transactions
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </mat-card>
+
+                <mat-card class="action-card" (click)="navigateToApprovals()">
+                    <div class="action-icon approvals-icon">
+                        <mat-icon>check_circle</mat-icon>
+                    </div>
+                    <h4>Transfer Approvals</h4>
+                    <p>Approve or reject pending transfers</p>
+                    <button mat-button color="primary">
+                        View Approvals
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </mat-card>
+
+                <mat-card class="action-card" (click)="navigateToLimits()">
+                    <div class="action-icon limits-icon">
+                        <mat-icon>settings</mat-icon>
+                    </div>
+                    <h4>Global Limits</h4>
+                    <p>Manage global transfer limits</p>
+                    <button mat-button color="primary">
+                        Manage Limits
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </mat-card>
+            </div>
+        </div>
+        }
+    </div>
+</div>

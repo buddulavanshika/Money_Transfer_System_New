@@ -1,0 +1,106 @@
+<div class="account-management">
+    <app-navbar></app-navbar>
+
+    <div class="container">
+        <h1>Account Management</h1>
+
+        <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+            <button mat-icon-button (click)="clearMessages()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <div *ngIf="errorMessage" class="alert alert-error">
+            {{ errorMessage }}
+            <button mat-icon-button (click)="clearMessages()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+
+        <mat-card class="form-card">
+            <mat-card-header>
+                <mat-card-title>Create New Account</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="createForm" (ngSubmit)="onCreateAccount()">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Account Holder Name</mat-label>
+                        <input matInput formControlName="holderName" required>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Opening Balance</mat-label>
+                        <input matInput type="number" formControlName="openingBalance" required>
+                        <span matPrefix>$&nbsp;</span>
+                    </mat-form-field>
+
+                    <div class="form-actions">
+                        <button mat-raised-button color="primary" type="submit"
+                            [disabled]="loading || createForm.invalid">
+                            <mat-icon>add</mat-icon>
+                            Create Account
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="form-card">
+            <mat-card-header>
+                <mat-card-title>Update Account</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <form [formGroup]="updateForm">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Account ID</mat-label>
+                        <input matInput #accountIdInput placeholder="Enter account ID to update">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>New Holder Name (optional)</mat-label>
+                        <input matInput formControlName="holderName">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Daily Limit (optional)</mat-label>
+                        <input matInput type="number" formControlName="dailyLimit">
+                        <span matPrefix>$&nbsp;</span>
+                    </mat-form-field>
+
+                    <div class="form-actions">
+                        <button mat-raised-button color="primary" (click)="onUpdateAccount(accountIdInput.value)"
+                            [disabled]="loading || !accountIdInput.value">
+                            <mat-icon>edit</mat-icon>
+                            Update Account
+                        </button>
+                    </div>
+                </form>
+            </mat-card-content>
+        </mat-card>
+
+        <mat-card class="form-card danger-zone">
+            <mat-card-header>
+                <mat-card-title>Danger Zone</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Account ID to Delete</mat-label>
+                    <input matInput #deleteAccountId placeholder="Enter account ID">
+                </mat-form-field>
+
+                <div class="form-actions">
+                    <button mat-raised-button color="warn" (click)="onDeleteAccount(deleteAccountId.value)"
+                        [disabled]="loading || !deleteAccountId.value">
+                        <mat-icon>delete</mat-icon>
+                        Delete Account
+                    </button>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+        <div *ngIf="loading" class="loading-overlay">
+            <mat-spinner></mat-spinner>
+        </div>
+    </div>
+</div>

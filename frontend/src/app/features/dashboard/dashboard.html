@@ -1,0 +1,117 @@
+<app-navbar></app-navbar>
+
+<div class="dashboard-container">
+    @if (loading) {
+    <div class="loading-container">
+        <mat-spinner diameter="50"></mat-spinner>
+        <p>Loading your dashboard...</p>
+    </div>
+    } @else if (errorMessage) {
+    <div class="error-container">
+        <mat-icon>error_outline</mat-icon>
+        <h3>{{ errorMessage }}</h3>
+        <button mat-raised-button color="primary" (click)="refreshData()">
+            Retry
+        </button>
+    </div>
+    } @else {
+    <div class="dashboard-content">
+        <!-- Welcome Banner -->
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1>Welcome back, {{ userProfile?.fullName || userProfile?.username }}!</h1>
+                <p>Manage your accounts and transfer funds securely.</p>
+            </div>
+            <mat-icon class="welcome-icon">waving_hand</mat-icon>
+        </div>
+
+        <!-- Total Balance Card -->
+        @if (accounts.length > 0) {
+        <div class="balance-section">
+            <mat-card class="balance-card">
+                <div class="balance-header">
+                    <div>
+                        <p class="balance-label">Total Balance (All Accounts)</p>
+                        <h2 class="balance-amount">{{ formatCurrency(getTotalBalance()) }}</h2>
+                    </div>
+                    <button mat-icon-button (click)="refreshData()" class="refresh-button">
+                        <mat-icon>refresh</mat-icon>
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+        }
+
+        <!-- Accounts List -->
+        <div class="accounts-section">
+            <h3>Your Accounts</h3>
+            @if (accounts.length === 0) {
+            <mat-card class="empty-state">
+                <mat-icon>account_balance_wallet</mat-icon>
+                <p>No accounts found</p>
+            </mat-card>
+            } @else {
+            <div class="accounts-grid">
+                @for (account of accounts; track account.id) {
+                <mat-card class="account-card">
+                    <div class="account-header">
+                        <div>
+                            <h4>{{ account.holderName }}</h4>
+                            <p class="account-id">ID: {{ account.id }}</p>
+                        </div>
+                        <span class="status-badge" [class]="account.status.toLowerCase()">
+                            {{ account.status }}
+                        </span>
+                    </div>
+
+                    <div class="account-balance">
+                        <p class="balance-label">Balance</p>
+                        <p class="balance-value">{{ formatCurrency(account.balance) }}</p>
+                    </div>
+
+                    @if (account.dailyLimit) {
+                    <div class="account-limit">
+                        <mat-icon>attach_money</mat-icon>
+                        <span>Daily Limit: {{ formatCurrency(account.dailyLimit) }}</span>
+                    </div>
+                    }
+
+                    @if (account.lastUpdated) {
+                    <div class="account-updated">
+                        <mat-icon>update</mat-icon>
+                        <span>Updated: {{ account.lastUpdated | date:'short' }}</span>
+                    </div>
+                    }
+
+                    <div class="account-actions">
+                        <button mat-button color="primary" (click)="navigateToHistory(account.id)">
+                            <mat-icon>history</mat-icon>
+                            View History
+                        </button>
+                    </div>
+                </mat-card>
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <h3>Quick Actions</h3>
+            <div class="actions-grid">
+                <mat-card class="action-card" (click)="navigateToTransfer()">
+                    <div class="action-icon transfer-icon">
+                        <mat-icon>swap_horiz</mat-icon>
+                    </div>
+                    <h4>Transfer Money</h4>
+                    <p>Send money to another account instantly</p>
+                    <button mat-button color="primary">
+                        Get Started
+                        <mat-icon>arrow_forward</mat-icon>
+                    </button>
+                </mat-card>
+            </div>
+        </div>
+    </div>
+    }
+</div>

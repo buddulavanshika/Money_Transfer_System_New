@@ -1,0 +1,176 @@
+<div class="user-management-container">
+    <div class="header">
+        <h2>User Management</h2>
+        <button class="btn btn-primary" (click)="toggleCreateForm()">
+            {{ showCreateForm ? 'Cancel' : '+ Create User' }}
+        </button>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+    <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+
+    <!-- Create User Form -->
+    <div *ngIf="showCreateForm" class="form-card">
+        <h3>Create New User</h3>
+        <form [formGroup]="createUserForm" (ngSubmit)="createUser()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="username">Username *</label>
+                    <input id="username" type="text" formControlName="username" placeholder="Enter username" />
+                    <div class="error"
+                        *ngIf="createUserForm.get('username')?.invalid && createUserForm.get('username')?.touched">
+                        Username is required (3-50 characters)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password *</label>
+                    <input id="password" type="password" formControlName="password"
+                        placeholder="Enter password (min 8 characters)" />
+                    <div class="error"
+                        *ngIf="createUserForm.get('password')?.invalid && createUserForm.get('password')?.touched">
+                        Password is required (minimum 8 characters)
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fullName">Full Name *</label>
+                    <input id="fullName" type="text" formControlName="fullName" placeholder="Enter full name" />
+                    <div class="error"
+                        *ngIf="createUserForm.get('fullName')?.invalid && createUserForm.get('fullName')?.touched">
+                        Full name is required (3-100 characters)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email *</label>
+                    <input id="email" type="email" formControlName="email" placeholder="Enter email address" />
+                    <div class="error"
+                        *ngIf="createUserForm.get('email')?.invalid && createUserForm.get('email')?.touched">
+                        Valid email is required
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Roles</label>
+                <div class="role-checkboxes">
+                    <label class="checkbox-label">
+                        <input type="checkbox" [checked]="hasRole('USER', createUserForm)"
+                            (change)="toggleRole('USER', createUserForm)" />
+                        <span>USER</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" [checked]="hasRole('ADMIN', createUserForm)"
+                            (change)="toggleRole('ADMIN', createUserForm)" />
+                        <span>ADMIN</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="createUserForm.invalid || loading">
+                    {{ loading ? 'Creating...' : 'Create User' }}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="toggleCreateForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Edit User Form -->
+    <div *ngIf="showEditForm && selectedUser" class="form-card">
+        <h3>Edit User: {{ selectedUser.username }}</h3>
+        <form [formGroup]="editUserForm" (ngSubmit)="updateUser()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="editFullName">Full Name</label>
+                    <input id="editFullName" type="text" formControlName="fullName" placeholder="Enter full name" />
+                </div>
+
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input id="editEmail" type="email" formControlName="email" placeholder="Enter email address" />
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Roles</label>
+                <div class="role-checkboxes">
+                    <label class="checkbox-label">
+                        <input type="checkbox" [checked]="hasRole('USER', editUserForm)"
+                            (change)="toggleRole('USER', editUserForm)" />
+                        <span>USER</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" [checked]="hasRole('ADMIN', editUserForm)"
+                            (change)="toggleRole('ADMIN', editUserForm)" />
+                        <span>ADMIN</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" formControlName="enabled" />
+                    <span>Account Enabled</span>
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary" [disabled]="editUserForm.invalid || loading">
+                    {{ loading ? 'Updating...' : 'Update User' }}
+                </button>
+                <button type="button" class="btn btn-secondary" (click)="cancelEdit()">Cancel</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+        <table class="users-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Roles</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngIf="loading && users.length === 0">
+                    <td colspan="7" class="loading-cell">Loading users...</td>
+                </tr>
+                <tr *ngIf="!loading && users.length === 0">
+                    <td colspan="7" class="empty-cell">No users found</td>
+                </tr>
+                <tr *ngFor="let user of users">
+                    <td>{{ user.id }}</td>
+                    <td><strong>{{ user.username }}</strong></td>
+                    <td>{{ user.fullName }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        <span *ngFor="let role of user.roles" class="role-badge" [class.admin-role]="role === 'ADMIN'">
+                            {{ role }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="status-badge" [class.enabled]="user.enabled" [class.disabled]="!user.enabled">
+                            {{ user.enabled ? 'Enabled' : 'Disabled' }}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <button class="btn btn-sm btn-edit" (click)="editUser(user)" [disabled]="loading">Edit</button>
+                        <button class="btn btn-sm btn-delete" (click)="deleteUser(user)"
+                            [disabled]="loading">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

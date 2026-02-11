@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: moneytransfer
+
+  datasource:
+    url: "jdbc:mysql://localhost:3306/moneytransferdb?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true"
+    username: "root"
+    password: "Root123$"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    defer-datasource-initialization: true
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: UTC
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:schema.sql,classpath:data.sql,classpath:seed-data.sql
+
+  jackson:
+    time-zone: UTC
+
+logging:
+  level:
+    root: INFO
+    com.mts: DEBUG
+    org.hibernate.SQL: DEBUG
+
+security:
+  jwt:
+    issuer: "mts-app"
+    # Secret used by JwtUtils (HS512). For demo purposes only; override via env var in real deployments.
+    secret: "${JWT_SECRET:2jD/FLMzO4onLTukS+td44qqtmkZWeZgBtC/WoCztL2sE2TbM7uy+4xid41rjPbYSAzvTZwzw4fzSX+L8TKpgg==}"
+    expiry-minutes: 30
+
+server:
+  port: 8080

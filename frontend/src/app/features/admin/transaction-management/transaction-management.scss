@@ -1,0 +1,107 @@
+.transaction-management {
+    .container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    h1 {
+        margin-bottom: 2rem;
+        color: #333;
+    }
+
+    .alert {
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-radius: 4px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &.alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        &.alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    }
+
+    .filter-card {
+        margin-bottom: 2rem;
+    }
+
+    .filter-form {
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+
+            button mat-icon {
+                margin-right: 0.5rem;
+            }
+        }
+    }
+
+    .table-card {
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .transactions-table {
+            width: 100%;
+
+            mat-chip {
+                &.status-success {
+                    background-color: #4caf50;
+                    color: white;
+                }
+
+                &.status-pending {
+                    background-color: #ff9800;
+                    color: white;
+                }
+
+                &.status-failed {
+                    background-color: #f44336;
+                    color: white;
+                }
+
+                &.status-reversed {
+                    background-color: #9e9e9e;
+                    color: white;
+                }
+            }
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #999;
+
+            mat-icon {
+                font-size: 64px;
+                width: 64px;
+                height: 64px;
+                margin-bottom: 1rem;
+            }
+        }
+    }
+}
